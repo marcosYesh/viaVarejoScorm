@@ -1,0 +1,235 @@
+var conteudo = "";
+var navegador = "";
+var tela = "";
+var scorm = "";
+var apresentacao = "";
+var scormIsFinalized = false;
+var scormIsRegistred = false;
+var apresentacaoCount = 0;
+var initModulo = false;
+
+var estilo = "teste";
+SetupIFrame("contentFrame");
+
+$(function() {
+	init();
+});
+
+$(window).on('beforeunload', doUnload(false));
+
+$(window).on('unload', doUnload());
+
+function init() {
+	setContent();
+	navegador = new Navegador();
+	navegador.setValorInativo(0, 0);
+	initPreparacao()
+	tela = new Tela("contentFrame");
+	var url = conteudo.getUrlAtual();
+	try {
+		tela.setSRC(url);
+		scorm = new Scorm();
+		scorm.setStartTime(new Date());
+		scorm.processInitialize(getAPI());
+		verificaStatus();
+		var bookmark = getBookmark();
+		bookmark = testaBookmark(bookmark);
+		scorm.processSetValue("cmi.core.lesson_location", bookmark);
+	} catch (e) {
+		alert(e);
+	}
+}
+
+function setContent() {
+	conteudo = new Content();
+	conteudo.addModulo("miniHub");
+	conteudo.addPage("miniHub/preparacao.html");
+	conteudo.addPage("miniHub/conferencia.html");
+	conteudo.addPage("miniHub/embalagem.html");
+	conteudo.addPage("miniHub/expedicao.html");
+	conteudo.addPage("miniHub/entrega.html");
+	conteudo.addPage("miniHub/retorno.html");
+}
+
+function doUnload(pressedExit) {
+	try {
+		if (processedUnload == true) {
+			return;
+		}
+		processedUnload = true;
+		var endTimeStamp = new Date();
+		var totalMilliseconds = (endTimeStamp.getTime() - startTimeStamp
+				.getTime());
+		var scormTime = ConvertMilliSecondsToSCORMTime(totalMilliseconds, false);
+		scorm.setStartTime = (scormTime);
+		scorm.processSetValue("cmi.core.session_time", scormTime);
+		if (pressedExit == false && reachedEnd == false) {
+			scorm.processSetValue("cmi.core.exit", "suspend");
+		}
+		scorm.processFinish();
+	} catch (e) {
+		// TODO: handle exception
+	}
+}
+
+function doExit() {
+	try {
+		if (reachedEnd == false
+				&& confirm("Would you like to save your progress  to resume later?")) {
+			scorm.processSetValue("cmi.core.exit", "suspend");
+		} else {
+			scorm.processSetValue("cmi.core.exit", "");
+		}
+		doUnload(true);
+	} catch (e) {
+		// TODO: handle exception
+	}
+}
+
+function funcaoNext() {
+	if (initModulo) {
+		conteudo.nextPage();
+		setApresentacao();
+		initModulo = false;
+	} else {
+		apresentacao.next();
+		if (apresentacao.isLast()) {
+			initModulo = true;
+			apresentacaoCount++;
+			
+		} else {
+			initModulo = false;
+		}
+	}
+	tela.setSRC(conteudo.getUrlAtual());
+	/*
+	 *  teste = conteudo.isUltimaPagina(); verificaStatus();
+	 * var bookmark = getBookmark();
+	 * scorm.processSetValue("cmi.core.lesson_location", bookmark); if (teste ==
+	 * true) { scorm.processSetValue("cmi.core.lesson_status", "completed"); }
+	 * testeButons(); tela.setSRC(conteudo.getUrlAtual());
+	 */
+};
+
+function funcaoPrev() {
+	apresentacao.prev();
+	tela.setSRC(conteudo.getUrlAtual());
+	/*
+	 * conteudo.nextPage(); teste = conteudo.isUltimaPagina(); verificaStatus();
+	 * var bookmark = getBookmark();
+	 * scorm.processSetValue("cmi.core.lesson_location", bookmark); if (teste ==
+	 * true) { scorm.processSetValue("cmi.core.lesson_status", "completed"); }
+	 * testeButons(); tela.setSRC(conteudo.getUrlAtual());
+	 */
+};
+
+function exibiPrev(value) {
+	navegador.ativaBtnPrev(value);
+}
+
+function exibiNext(value) {
+	navegador.ativaBtnNext(value);
+}
+
+function testeButon() {
+	var tipo = apresentacao.getTipoAtual();
+	if (tipo == "pergunta") {
+		exibiPrev(false);
+		exibiNext(false);
+	} else {
+		exibiNext(true);
+		if (apresentacao.isFirst() == true || apresentacao.isLast()) {
+			exibiPrev(false);
+		} else {
+			exibiPrev(true);
+		}
+	}
+}
+
+function getEstilo() {
+	return apresentacao.getSlideAtual();
+}
+
+function getTipoSlide() {
+	return apresentacao.getTipoAtual();
+}
+
+function initPreparacao() {
+	var preparacao = new Apresentacao();
+	preparacao.add("inicio", "conteudo");
+	preparacao.add("prefacio", "conteudo");
+	preparacao.add("conteudo", "conteudo");
+	preparacao.add("pergunta", "pergunta");
+	preparacao.add("conteudo1", "conteudo");
+	preparacao.add("pergunta1", "pergunta");
+	apresentacao = preparacao;
+}
+
+function initConfereicia() {
+	var conferencia = new Apresentacao();
+	conferencia.add("conteudo", "conteudo");
+	conferencia.add("pergunta", "pergunta");
+	apresentacao = conferencia;
+}
+
+function initEmbalagem() {
+	var embalagem = new Apresentacao();
+	embalagem.add("conteudo", "conteudo");
+	apresentacao = embalagem;
+}
+
+
+function initEntrega() {
+	var entrega = new Apresentacao();
+	entrega.add("conteudo", "conteudo");
+	entrega.add("conteudo1", "conteudo");
+	entrega.add("pergunta1", "pergunta");
+	apresentacao = entrega;
+}
+
+
+function initExpedicao() {
+	var expedicao = new Apresentacao();
+	expedicao.add("conteudo", "conteudo");
+	apresentacao = expedicao;
+}
+
+function initRetorno() {
+	var retorno = new Apresentacao();
+	retorno.add("conteudo", "conteudo");
+	retorno.add("pergunta", "pergunta");
+	retorno.add("fim", "conteudo");
+	apresentacao = retorno;
+}
+
+
+                                                             
+                                                               
+                                                             
+        
+
+
+
+
+
+function setApresentacao() {
+	switch (apresentacaoCount) {
+	case 1:
+        initConfereicia()
+		break;
+	case 2:
+        initEmbalagem()
+		break;
+	case 3:
+        initExpedicao()
+		break;
+	case 4:
+        initEntrega()
+		break;
+	case 5:
+        initRetorno()
+		break;    
+	default:
+		break;
+	}
+}

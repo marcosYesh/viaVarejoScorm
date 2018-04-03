@@ -3,8 +3,8 @@ var Navegador = function(idPrev, idNext, strFuncaoPrev, strFuncaoNext) {
 	this.idNext = testeValor(idNext, "btnNext");
 	this.strFuncaoNext = testeValor(strFuncaoNext, "funcaoNext");
 	this.strFuncaoPrev = testeValor(strFuncaoPrev, "funcaoPrev");
-	this.btnPrevAtivo = false;
-	this.btnNextAtivo = false;
+	this.btnPrevAtivo = true;
+	this.btnNextAtivo = true;
 	this.valorPrevInativo = 0;
 	this.valorNextInativo = 0;
 
@@ -32,15 +32,19 @@ var Navegador = function(idPrev, idNext, strFuncaoPrev, strFuncaoNext) {
 	
 	this.exibirPrev = function() {
 		$("#btnPrev").css("opacity", 1);
+		$("#btnPrev").css("cursor", "pointer");
 	};
 	this.escondePrev = function() {
 		$("#btnPrev").css("opacity", this.valorPrevInativo);
+		$("#btnPrev").css("cursor", "default");
 	};
 	this.exibirNext = function() {
 		$("#btnNext").css("opacity", 1);
+		$("#btnNext").css("cursor", "pointer");
 	};
 	this.escondeNext = function() {
 		$("#btnNext").css("opacity", this.valorNextInativo);
+		$("#btnNext").css("cursor", "default");
 	};
 	var varStrFuncaoNext = this.strFuncaoNext;
 	var varStrFuncaoPrev = this.strFuncaoPrev;
@@ -62,7 +66,6 @@ function testeValor(valor, valorPadrao) {
 }
 
 function exec(funcao, self) {
-
 	if (funcao == "funcaoNext") {
 		if (self.btnNextAtivo == true) {
 			try {

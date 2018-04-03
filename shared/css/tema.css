@@ -116,12 +116,12 @@ user-select: none;
   background: url("../image/head.png");
   background-repeat:no-repeat;
   background-position: top left;
-  background-size: 235px 97px;
+  background-size: 16em 6em;
   position:absolute;
   margin: 0px;
   padding: 0px;
   height: 97px;
   top: 8px;
-  width: 800px;
+  width: 38em;
   float: left;
 }
