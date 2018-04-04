@@ -58,18 +58,19 @@ function SetupIFrame(name) { // set our iFrame for the content to take up the
 }
 
 function testaBookmark(bookmark) {
-	var vLocal = scorm.processGetValue("cmi.core.lesson_location");
-	var vStatusLesson = scorm.processGetValue("cmi.core.lesson_status");
+	try {
+		var vLocal = scorm.processGetValue("cmi.core.lesson_location");
+		var vStatusLesson = scorm.processGetValue("cmi.core.lesson_status");	
+	} catch (e) {
+		var vLocal = "";
+		var vStatusLesson = "not attempted";
+	}
 	if ( vLocal != "") {
 		if ( vStatusLesson != "not attempted") {
-			if (confirm("Would you like to resume from where you previously left off?")) {
-				bookmark = parseInt(vLocal, 10);
+			    bookmark = parseInt(vLocal, 10);
 				conteudo.setPageAtual(vLocal);
 				var url = conteudo.getUrlAtual();
 				tela.setSRC(url);			
-			} else {
-				bookmark = conteudo.getPageAtual();
-			}
 		} else {
 			bookmark = 0;
 		}
