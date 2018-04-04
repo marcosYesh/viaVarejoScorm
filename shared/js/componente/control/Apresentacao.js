@@ -43,5 +43,9 @@ var Apresentacao = function() {
 	this.isLast = function() {
 		return (this.slideAtual == (this.slides.length -1));
 	}
+	
+	this.count = function(){
+        return this.slides.length;		
+	}
 
 };

@@ -90,23 +90,25 @@ function funcaoNext() {
 	if (initModulo) {
 		conteudo.nextPage();
 		setApresentacao();
-		initModulo = false;
+		if (apresentacao.count() > 1) {
+			initModulo = false;
+		}
 	} else {
 		apresentacao.next();
 		if (apresentacao.isLast()) {
 			initModulo = true;
 			apresentacaoCount++;
-			
+
 		} else {
 			initModulo = false;
 		}
 	}
 	tela.setSRC(conteudo.getUrlAtual());
 	/*
-	 *  teste = conteudo.isUltimaPagina(); verificaStatus();
-	 * var bookmark = getBookmark();
-	 * scorm.processSetValue("cmi.core.lesson_location", bookmark); if (teste ==
-	 * true) { scorm.processSetValue("cmi.core.lesson_status", "completed"); }
+	 * teste = conteudo.isUltimaPagina(); verificaStatus(); var bookmark =
+	 * getBookmark(); scorm.processSetValue("cmi.core.lesson_location",
+	 * bookmark); if (teste == true) {
+	 * scorm.processSetValue("cmi.core.lesson_status", "completed"); }
 	 * testeButons(); tela.setSRC(conteudo.getUrlAtual());
 	 */
 };
@@ -178,7 +180,6 @@ function initEmbalagem() {
 	apresentacao = embalagem;
 }
 
-
 function initEntrega() {
 	var entrega = new Apresentacao();
 	entrega.add("conteudo", "conteudo");
@@ -186,7 +187,6 @@ function initEntrega() {
 	entrega.add("pergunta1", "pergunta");
 	apresentacao = entrega;
 }
-
 
 function initExpedicao() {
 	var expedicao = new Apresentacao();
@@ -202,33 +202,23 @@ function initRetorno() {
 	apresentacao = retorno;
 }
 
-
-                                                             
-                                                               
-                                                             
-        
-
-
-
-
-
 function setApresentacao() {
 	switch (apresentacaoCount) {
 	case 1:
-        initConfereicia()
+		initConfereicia()
 		break;
 	case 2:
-        initEmbalagem()
+		initEmbalagem()
 		break;
 	case 3:
-        initExpedicao()
+		initExpedicao()
 		break;
 	case 4:
-        initEntrega()
+		initEntrega()
 		break;
 	case 5:
-        initRetorno()
-		break;    
+		initRetorno()
+		break;
 	default:
 		break;
 	}
