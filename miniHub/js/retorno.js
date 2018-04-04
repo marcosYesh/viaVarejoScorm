@@ -18,6 +18,10 @@ $(function() {
 		responder()
 	});
 	exibirPerguntas()
+	if (estilo == "fim") {
+		parent.exibiPrev(false);
+		parent.exibiNext(false);
+	}
 });
 
 function addCheckBox() {
@@ -64,7 +68,7 @@ function exibirPerguntas() {
 	var taxaButon = 0
 	if (tipo == "pergunta") {
 		taxa = 1;
-		taxaButon =  0.5;
+		taxaButon = 0.5;
 	}
 	$.each(checkBoxGroup, function(index, item) {
 		item.exibir(taxa);

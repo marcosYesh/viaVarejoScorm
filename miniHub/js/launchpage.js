@@ -97,8 +97,6 @@ function funcaoNext() {
 		apresentacao.next();
 		if (apresentacao.isLast()) {
 			initModulo = true;
-			apresentacaoCount++;
-
 		} else {
 			initModulo = false;
 		}
@@ -165,6 +163,7 @@ function initPreparacao() {
 	preparacao.add("conteudo1", "conteudo");
 	preparacao.add("pergunta1", "pergunta");
 	apresentacao = preparacao;
+	apresentacaoCount++;
 }
 
 function initConfereicia() {
@@ -184,7 +183,7 @@ function initEntrega() {
 	var entrega = new Apresentacao();
 	entrega.add("conteudo", "conteudo");
 	entrega.add("conteudo1", "conteudo");
-	entrega.add("pergunta1", "pergunta");
+	entrega.add("pergunta", "pergunta");
 	apresentacao = entrega;
 }
 
@@ -222,4 +221,5 @@ function setApresentacao() {
 	default:
 		break;
 	}
+	apresentacaoCount++;
 }
