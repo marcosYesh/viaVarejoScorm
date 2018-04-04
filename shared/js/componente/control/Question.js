@@ -2,10 +2,15 @@
  * 
  */
 var Question = function(id, text, type, answers, correctAnswer, objectiveId) {
-	this.Id = id;
-	this.Text = text;
-	this.Type = type;
-	this.Answers = answers;
-	this.CorrectAnswer = correctAnswer;
-	this.ObjectiveId = objectiveId;
+	this.id = id;
+	this.text = text;
+	this.type = type;
+	this.answers = answers;
+	this.correctAnswer = correctAnswer;
+	this.objectiveId = objectiveId;
+	
+	this.getAnswers = function(){
+		return this.answers;
+	}
+	
 };

@@ -3,10 +3,15 @@ var navegador = "";
 var tela = "";
 var scorm = "";
 var apresentacao = "";
+var test = "";
 var scormIsFinalized = false;
 var scormIsRegistred = false;
 var apresentacaoCount = 0;
 var initModulo = false;
+var QUESTION_TYPE_CHOICE = "choice";
+var QUESTION_TYPE_TF = "true-false";
+var QUESTION_TYPE_NUMERIC = "numeric";
+var questaoAtual = 0;
 
 var estilo = "teste";
 SetupIFrame("contentFrame");
@@ -25,6 +30,8 @@ function init() {
 	navegador.setValorInativo(0, 0);
 	initPreparacao()
 	tela = new Tela("contentFrame");
+	test = new Test();
+	carregarTeste();
 	var url = conteudo.getUrlAtual();
 	try {
 		tela.setSRC(url);
@@ -93,6 +100,19 @@ function funcaoNext() {
 		if (apresentacao.count() > 1) {
 			initModulo = false;
 		}
+		try {
+			teste = conteudo.isUltimaPagina();
+			verificaStatus();
+			var bookmark = getBookmark();
+			scorm.processSetValue("cmi.core.lesson_location", bookmark);
+			if (teste == true) {
+				scorm.processSetValue("cmi.core.lesson_status", "completed");
+			}
+			testeButons();	
+		} catch (e) {
+			// TODO: handle exception
+		}
+		tela.setSRC(conteudo.getUrlAtual());
 	} else {
 		apresentacao.next();
 		if (apresentacao.isLast()) {
@@ -100,15 +120,8 @@ function funcaoNext() {
 		} else {
 			initModulo = false;
 		}
+		tela.setSRC(conteudo.getUrlAtual());
 	}
-	tela.setSRC(conteudo.getUrlAtual());
-	/*
-	 * teste = conteudo.isUltimaPagina(); verificaStatus(); var bookmark =
-	 * getBookmark(); scorm.processSetValue("cmi.core.lesson_location",
-	 * bookmark); if (teste == true) {
-	 * scorm.processSetValue("cmi.core.lesson_status", "completed"); }
-	 * testeButons(); tela.setSRC(conteudo.getUrlAtual());
-	 */
 };
 
 function funcaoPrev() {
@@ -222,4 +235,23 @@ function setApresentacao() {
 		break;
 	}
 	apresentacaoCount++;
+}
+
+function getRespostas() {
+	var questao = test.getQuestion(questaoAtual);
+	return questao.getAnswers();
+}
+
+function carregarTeste() {
+	test.add("br.com.scorm.yesh.minihub_1", "preparaca1", QUESTION_TYPE_CHOICE,
+			new Array(false, true, false, false), 2, "obj_minihub");
+	test.add("br.com.scorm.yesh.minihub_2", "preparaca2", QUESTION_TYPE_CHOICE,
+			new Array(false, true, false, false), 2, "obj_minihub");
+	test.add("br.com.scorm.yesh.minihub_1", "conferencia",
+			QUESTION_TYPE_CHOICE, new Array(false, true, false, false), 2,
+			"obj_minihub");
+	test.add("br.com.scorm.yesh.minihub_2", "expedicao", QUESTION_TYPE_CHOICE,
+			new Array(false, true, false, false), 2, "obj_minihub");
+	test.add("br.com.scorm.yesh.minihub_2", "entrega", QUESTION_TYPE_CHOICE,
+			new Array(false, true, false, false), 2, "obj_minihub");
 }
