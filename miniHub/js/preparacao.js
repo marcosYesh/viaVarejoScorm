@@ -2,6 +2,7 @@ var checkBoxGroup = [];
 var respondido = false;
 var complemeto = "";
 var chkSelecionado = false;
+var idquestao = 0;
 
 $(function() {
 	try {
@@ -9,6 +10,9 @@ $(function() {
 		estilo = parent.getEstilo()
 		if (estilo == "conteudo1") {
 			parent.exibiPrev(false);
+		}
+		if (estilo == "pergunta1") {
+			idquestao = 1;
 		}
 	} catch (e) {
 		estilo = "conteudo"
@@ -49,9 +53,12 @@ function selectAtivo(me) {
 function responder() {
 	if (respondido == false) {
 		if (chkSelecionado) {
-			respostas = [ false, true, false, false ];
+			respostas = parent.getRespostas(idquestao);
 			$.each(checkBoxGroup, function(index, item) {
-				item.validar(respostas[index]);
+				teste = item.validar(respostas[index]);
+				if(teste){
+					parent.addScore();
+				}
 			});
 			$('#btnAction').attr('src', '../shared/image/continuar.png');
 			respondido = true;

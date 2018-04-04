@@ -1,7 +1,8 @@
 var Aluno = function(id,name,score){
-	this.id = id;
-	this.name = name;
-	this.score = score;
+	
+	this.id = validar(id,1);
+	this.name = validar(name,"");
+	this.score = validar(score,0);
 	this.answers = [];
     
 	this.getID = function(){
@@ -30,5 +31,14 @@ var Aluno = function(id,name,score){
 	
 	this.setAnswer = function(posicao,value){
 		this.answers[posicao] = value;
+	}
+	
+	
+	function validar(valor,valorDefault){
+		if(typeof valor == "undefined"){
+			return valorDefault;
+		}else{
+			return valor;
+		}
 	}
 }

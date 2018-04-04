@@ -12,6 +12,7 @@ var QUESTION_TYPE_CHOICE = "choice";
 var QUESTION_TYPE_TF = "true-false";
 var QUESTION_TYPE_NUMERIC = "numeric";
 var questaoAtual = 0;
+var aluno="";
 
 var estilo = "teste";
 SetupIFrame("contentFrame");
@@ -41,8 +42,13 @@ function init() {
 		verificaStatus();
 		var bookmark = getBookmark();
 		bookmark = testaBookmark(bookmark);
+		idAluno = scorm.processGetValue("cmi.core.student_id");
+		nomeAluno = scorm.processGetValue("cmi.core.student_name");
+		scoreAluno = getScore();
+		aluno = new Aluno(idAluno, nomeAluno, scoreAluno);
 		scorm.processSetValue("cmi.core.lesson_location", bookmark);
 	} catch (e) {
+		aluno = new Aluno(1, "teste", 0);
 		alert(e);
 	}
 }
@@ -108,7 +114,7 @@ function funcaoNext() {
 			if (teste == true) {
 				scorm.processSetValue("cmi.core.lesson_status", "completed");
 			}
-			testeButons();	
+			testeButons();
 		} catch (e) {
 			// TODO: handle exception
 		}
@@ -127,13 +133,6 @@ function funcaoNext() {
 function funcaoPrev() {
 	apresentacao.prev();
 	tela.setSRC(conteudo.getUrlAtual());
-	/*
-	 * conteudo.nextPage(); teste = conteudo.isUltimaPagina(); verificaStatus();
-	 * var bookmark = getBookmark();
-	 * scorm.processSetValue("cmi.core.lesson_location", bookmark); if (teste ==
-	 * true) { scorm.processSetValue("cmi.core.lesson_status", "completed"); }
-	 * testeButons(); tela.setSRC(conteudo.getUrlAtual());
-	 */
 };
 
 function exibiPrev(value) {
@@ -237,21 +236,63 @@ function setApresentacao() {
 	apresentacaoCount++;
 }
 
-function getRespostas() {
-	var questao = test.getQuestion(questaoAtual);
+function getRespostas(posicao) {
+	var questao = test.getQuestion(posicao);
 	return questao.getAnswers();
 }
 
 function carregarTeste() {
 	test.add("br.com.scorm.yesh.minihub_1", "preparaca1", QUESTION_TYPE_CHOICE,
-			new Array(false, true, false, false), 2, "obj_minihub");
+			new Array(false, false, true, false), 2, "obj_minihub");
 	test.add("br.com.scorm.yesh.minihub_2", "preparaca2", QUESTION_TYPE_CHOICE,
 			new Array(false, true, false, false), 2, "obj_minihub");
 	test.add("br.com.scorm.yesh.minihub_1", "conferencia",
-			QUESTION_TYPE_CHOICE, new Array(false, true, false, false), 2,
+			QUESTION_TYPE_CHOICE, new Array(false, false, true, false), 2,
 			"obj_minihub");
 	test.add("br.com.scorm.yesh.minihub_2", "expedicao", QUESTION_TYPE_CHOICE,
-			new Array(false, true, false, false), 2, "obj_minihub");
+			new Array(true, false, false, false), 2, "obj_minihub");
 	test.add("br.com.scorm.yesh.minihub_2", "entrega", QUESTION_TYPE_CHOICE,
-			new Array(false, true, false, false), 2, "obj_minihub");
+			new Array(true, false, false, false), 2, "obj_minihub");
+}
+
+function getScore() {
+	var valor;
+	try {
+		valor = scorm.processGetValue("cmi.core.score.raw");
+	} catch (e) {
+		valor = 0;
+	}
+	return valor;
+}
+
+function addScore() {
+	try {
+		score =  parseInt(aluno.getScore())
+		if(isNaN(score)){
+			score = 0;
+		}
+		score = parseInt(score) + 20;
+		aluno.setScore(score);
+		scorm.processSetValue("cmi.core.score.raw", score);
+	} catch (e) {
+		// TODO: handle exception
+	}
+
+}
+
+function setScore() {
+	try {
+		score = aluno.getScore();
+		scorm.processSetValue("cmi.core.score.raw", score);
+		scorm.processSetValue("cmi.core.score.min", "0");
+		scorm.processSetValue("cmi.core.score.max", "100");
+		if (score >= 0) {
+			scorm.processSetValue("cmi.core.lesson_status", "passed");
+		} else {
+			scorm.processSetValue("cmi.core.lesson_status", "failed");
+		}
+	} catch (e) {
+		// TODO: handle exception
+	}
+
 }

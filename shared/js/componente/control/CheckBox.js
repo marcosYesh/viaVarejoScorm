@@ -13,9 +13,11 @@ var CheckBox = function(id) {
 	}
 
 	this.validar = function(value) {
+		var acertou = false;
 		if (this.ativo == true) {
 			if (value == true) {
 				$('#' + this.id).attr('src', '../shared/image/certo.png');
+				acertou = true;
 			} else {
 				$('#' + this.id).attr('src', '../shared/image/errado.png');
 			}	
@@ -27,6 +29,7 @@ var CheckBox = function(id) {
 				$('#' + this.id).attr('src', '../shared/image/errado.png');
 			}
 		}
+		return acertou;
 	}
 	
 	this.exibir = function(valor){
